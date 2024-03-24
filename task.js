@@ -9,7 +9,7 @@ const img = document.getElementById("img");
 const boxScore = document.getElementById("boxScore");
 const nextPlayer = document.getElementById("nextPlayer");
 nextPlayer.addEventListener('click', nextPlayerFunction);
-let customUrl = "webservice/index.php";
+let customUrl = "webservice/includes/actions.json";
 let customData = [];
 let cardCount = 0;
 let boxCount = 0;
@@ -46,13 +46,22 @@ function getApi(url, nextFunction) {
             if (!response.ok) {
                 throw new Error(`HTTP error (${response.status}): ${response.statusText}`);
             }
-            return response.json();
+            return response.json();  // Parse response as JSON
         })
-        .then(nextFunction)
-        .catch(errorMessage);
+        .then((data) => {
+            if (Array.isArray(data)) {
+                nextFunction(data);  // Pass the parsed JSON array to nextFunction
+            } else {
+                throw new Error('The fetched data is not an array');
+            }
+        })
+        .catch((error) => {
+            console.error('Error fetching or processing the data:', error);
+        });
 }
 
 function setCustomData(data) {
+    console.log(data)
     for (let i = 0; i < data.length; i++) {
         for (let j = 0; j < data[i].amount; j++) {
             customData.push(data[i]);
@@ -198,10 +207,7 @@ function makeRows(rows, cols) {
 }
 
 function clickCell(e) {
-    if (roundOver !== false) {
-        console.log('Round is over');
-        alert('Round is over')
-    } else if (e.target.dataset.colorValues) {
+    if (e.target.dataset.colorValues) {
         console.log(e.target.dataset.colorValues);
     } else if (e.target.id == 'meeple') {
         e.target.parentNode.innerHTML = '';
@@ -210,6 +216,9 @@ function clickCell(e) {
         meeple.srcset = `images/${playerColors[playingPlayer]}-meeple.png`;
         meeple.id = 'meeple';
         e.target.appendChild(meeple);
+    } else if (roundOver !== false) {
+        console.log('Round is over');
+        alert('Round is over')
     } else {
         const clickedIndex = parseInt(e.target.dataset.index);
         const gridWidth = 32;

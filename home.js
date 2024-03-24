@@ -20,29 +20,29 @@ function init () {
 function twoPlayers(e) {
     e.preventDefault()
     localStorage.setItem('players', '2');
-    window.location.href = 'game.php';
+    window.location.href = 'game.html';
 }
 
 function threePlayers(e) {
     e.preventDefault()
     localStorage.setItem('players', '3');
-    window.location.href = 'game.php';
+    window.location.href = 'game.html';
 }
 
 function fourPlayers(e) {
     e.preventDefault()
     localStorage.setItem('players', '4');
-    window.location.href = 'game.php';
+    window.location.href = 'game.html';
 }
 
 function fivePlayers(e) {
     e.preventDefault()
     localStorage.setItem('players', '5');
-    window.location.href = 'game.php';
+    window.location.href = 'game.html';
 }
 
 function sixPlayers(e) {
     e.preventDefault()
     localStorage.setItem('players', '6');
-    window.location.href = 'game.php';
+    window.location.href = 'game.html';
 }
