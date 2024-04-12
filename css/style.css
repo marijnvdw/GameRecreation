@@ -152,3 +152,15 @@ button:after {
     transition: all 0.8s
 }
 
+button:disabled {
+
+    background-color: grey;
+
+}
+
+.available {
+    background: radial-gradient(circle, rgba(172,198,177,0.3477766106442577) 0%, rgba(117,199,141,0.4206057422969187) 25%, rgba(101,195,112,0.6783088235294117) 90%);
+
+}
+
+
