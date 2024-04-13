@@ -38,7 +38,6 @@ function init() {
         window.location.href = 'index.html';
     }
 
-    makeRows(32, 32);
 
     if (localStorage.getItem('players') !== '0') {
         playerAmount = localStorage.getItem('players');
@@ -50,6 +49,7 @@ function init() {
         playingPlayer = localStorage.getItem('playingPlayer');
     }
 
+    makeRows(32, 32);
 
     const cardImage = document.createElement('img');
     cardImage.id = 'image';
@@ -89,10 +89,40 @@ function getApi(url, nextFunction) {
 }
 
 function setCustomData(data) {
+    let versions = JSON.parse(localStorage.getItem('versions'))
+    let waterTiles = []
     for (let i = 0; i < data.length; i++) {
         for (let j = 0; j < data[i].amount; j++) {
-            customData.push(data[i]);
+            if (data[i].id === 24 || data[i].id === 35) {
+
+            } else if (versions[1] === true && data[i].version === 1) {
+                waterTiles.push(data[i]);
+            } else if (versions[data[i].version] === true) {
+                customData.push(data[i]);
+            }
         }
+    }
+    console.log(waterTiles)
+    console.log(customData)
+
+    customData = shuffleArray(customData);
+
+    if (versions[1] === true) {
+        waterTiles = shuffleArray(waterTiles);
+        waterTiles.push(data[35])
+
+        for (let i = 0; i < waterTiles.length; i++) {
+            let itemWithoutAmount = {
+                ...waterTiles[i]
+            };
+            delete itemWithoutAmount.amount;
+            itemWithoutAmount.id = i;
+            itemWithoutAmount.tile = null;
+            itemWithoutAmount.rotation = null;
+            waterTiles[i] = itemWithoutAmount;
+        }
+
+        customData = waterTiles.concat(customData);
     }
 
     for (let i = 0; i < customData.length; i++) {
@@ -106,8 +136,13 @@ function setCustomData(data) {
         customData[i] = itemWithoutAmount;
     }
 
-    customData = shuffleArray(customData);
+
     changeImage(customData[cardCount]);
+    console.log(`Amount of cards is ${customData.length}`)
+    console.log(customData)
+    console.log(waterTiles)
+
+
 }
 
 function setCustomDataLocal(data) {
@@ -138,6 +173,19 @@ function setCustomDataLocal(data) {
 }
 
 function playerScoreBoard() {
+    let storedNames = localStorage.getItem('names');
+    let names = JSON.parse(storedNames);
+
+    for (let j = 0; j < names.length; j++) {
+        if (names[j] === "") {
+            names.splice(j, 1);
+            playerColors.splice(j, 1);
+            backgroundColors.splice(j, 1);
+            j--;
+        }
+    }
+    console.log(playerColors)
+
     for (let i = 0; i < playerAmount; i++) {
         const playerScoreBoard = document.createElement('div');
         playerScoreBoard.id = 'playerScoreBoard';
@@ -151,6 +199,14 @@ function playerScoreBoard() {
             playingIndicator.style.opacity = 0;
         }
         playerScoreBoard.appendChild(playingIndicator);
+
+
+        let playerName = document.createElement('p');
+        playerName.id = 'playerName';
+        playerName.innerHTML = `name: ${names[i]}`;
+
+        playerScoreBoard.appendChild(playerName);
+
 
         let playerScore = document.createElement('p');
         playerScore.id = 'playerScore';
@@ -278,12 +334,18 @@ function makeRows(rows, cols) {
         }, false);
 
         if (Math.ceil((boxCount - rows) / 2) == c + 1) {
-            cell.dataset.colorValues = [1, 2, 0, 2];
 
+            let versions = JSON.parse(localStorage.getItem('versions'))
             let cardImage = document.createElement('img');
-            cardImage.srcset = "https://wikicarpedia.com/images/3/36/Base_Game_C3_Tile_D.png";
-            cardImage.id = 'cardImage';
-
+            if (versions[1] === false) {
+                cell.dataset.colorValues = [1, 2, 0, 2];
+                cardImage.srcset = "images/Tiles/Base_Game/Base_Game_C3_Tile_D.png";
+                cardImage.id = 'cardImage';
+            } else {
+                cell.dataset.colorValues = [0, 0, 5, 0];
+                cardImage.srcset = "images/Tiles/River/River_I_C2_Tile_A.jpg";
+                cardImage.id = 'cardImage';
+            }
             cell.appendChild(cardImage);
         } else {
             cell.innerText = (c + 1);
@@ -306,21 +368,21 @@ function clickCell(e) {
             if (e.target.className === 'available') {
                 if (playersMeeples[playingPlayer] != 0) {
                     if (!placeThisRound) {
-                    playersMeeples[playingPlayer]--;
-                    updateMeeples();
-                    let meeple = document.createElement('img');
-                    meeple.srcset = `images/${playerColors[playingPlayer]}-meeple.png`;
-                    meeple.id = 'meeple';
-                    meeple.dataset.index = playingPlayer;
-                    meeple.dataset.number = cardCount;
-                    placeThisRound = true;
+                        playersMeeples[playingPlayer]--;
+                        updateMeeples();
+                        let meeple = document.createElement('img');
+                        meeple.srcset = `images/meeples/${playerColors[playingPlayer]}-meeple.png`;
+                        meeple.id = 'meeple';
+                        meeple.dataset.index = playingPlayer;
+                        meeple.dataset.number = cardCount;
+                        placeThisRound = true;
 
-                    let div = e.target.parentElement.parentElement;
-                    let currentRotation = getRotationAngle(div);
-                    let oppositeRotation = (360 - currentRotation) % 360;
-                    meeple.style.transform = `rotate(${oppositeRotation}deg)`;
+                        let div = e.target.parentElement.parentElement;
+                        let currentRotation = getRotationAngle(div);
+                        let oppositeRotation = (360 - currentRotation) % 360;
+                        meeple.style.transform = `rotate(${oppositeRotation}deg)`;
 
-                    e.target.appendChild(meeple);
+                        e.target.appendChild(meeple);
                     } else {
                         alert('There is already a meeple placed this round');
                     }
@@ -406,7 +468,7 @@ function clickCell(e) {
             e.target.innerHTML = '';
             let cardImage = document.createElement('div');
             cardImage.id = 'cardImage';
-            cardImage.style.backgroundImage = `url(https:wikicarpedia.com/images/${customData[cardCount].img})`; // Set background image
+            cardImage.style.backgroundImage = `url(images/Tiles/${customData[cardCount].img})`; // Set background image
             cardImage.style.transform = `rotate(${rotation}deg)`;
             cardImage.dataset.cardNumber = cardCount;
 
@@ -425,7 +487,7 @@ function clickCell(e) {
                 const cell = document.createElement('div');
                 cell.dataset.index = i + 1;
                 cell.id = 'Grid';
-                if (properties[i] === 1 || properties[i] === 2) {
+                if (properties[i] === 1 || properties[i] === 2 || properties[i] === 3) {
                     cell.className = 'available';
                 }
                 gridContainer.appendChild(cell);
@@ -508,7 +570,9 @@ function changeImage(list) {
     if (list) {
 
         let image = document.getElementById("image");
-        image.srcset = `https:wikicarpedia.com/images/${list.img}`;
+        //image.srcset = `https:wikicarpedia.com/images/${list.img}`;
+
+        image.srcset = `images/Tiles/${list.img}`;
 
         previewImg.style.transform = `rotate(${0}deg)`;
         rotation = 0;
@@ -548,10 +612,10 @@ function nextPlayerFunction() {
         });
         updateScores();
         roundOver = false;
-        changeImage(customData[cardCount]);
         removeAvailableClass();
         reverseButtons();
         placeThisRound = false;
+        changeImage(customData[cardCount]);
     }
 }
 

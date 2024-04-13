@@ -6,6 +6,7 @@ let backgroundColors = ['227, 182, 70', '201, 67, 36', '81, 196, 75', '89, 126, 
 let playerAmount = 0;
 const container = document.getElementById("main");
 const img = document.getElementById("img");
+const imgColors = document.getElementById("imgColors");
 const boxScore = document.getElementById("boxScore");
 const nextPlayer = document.getElementById("nextPlayer");
 nextPlayer.addEventListener('click', nextPlayerFunction);
@@ -117,13 +118,65 @@ function changeImage(list) {
     if (list) {
 
         let image = document.getElementById("image");
-        image.srcset = `https:wikicarpedia.com/images/${list.img}`;
+        //image.srcset = `https:wikicarpedia.com/images/${list.img}`;
+        image.srcset = `images/Tiles/${list.img}`;
+        //image.srcset = `images/Tiles/Base_Game_C3_Tile_A.png`;
+        //C:\xampp\htdocs\Games\images
 
         img.style.transform = `rotate(${0}deg)`;
         rotation = 0;
 
-        container.innerHTML = `https:wikicarpedia.com/images/${list.img} <br> ${list.properties}`
+        container.innerHTML = `Img: ${image.srcset} <br> Properties: ${list.properties} <br> Numbers: ${list.numbers} <br> Amount: ${list.amount} <br> Version: ${list.version} <br> Items:${list.items} <br><br><br>
+------------------<br>
+Properties:<br>
+Grass = 0 <br>
+City = 1<br>
+Path = 2<br>
+Monastery = 3<br>
+Wall = 4<br>
+Water = 5<br>
+<br>
+Items:<br>
+None = 0<br>
+Monastery = 1<br>
+Wapen = 2<br>
+------------------<br>
+<a href="https://wikicarpedia.com/car/Main_Page" target="_blank">Main Page</a>
 
+<h2>Base Game</h2> 
+<a href="https://wikicarpedia.com/car/Base_game" target="_blank">Rules</a>
+The Abbot<br>
+Connecting city's and roads points<br>
+Changing imposible cards<br>
+Meeple in grass<br>
+<h2>The Abbot</h2> 
+<a href="https://wikicarpedia.com/car/The_Abbot" target="_blank">Rules</a>
+The Abbot<br>
+Gardens<br>
+<h2>The River</h2> 
+<a href="https://wikicarpedia.com/car/River" target="_blank">Rules</a>
+Prevent U turns<br>
+Expansion n(with t spit)<br>
+<h2>EXP 1. Inns and Cathedrals</h2> 
+<a href="https://wikicarpedia.com/car/Inns_and_Cathedrals" target="_blank">Rules</a>
+7th Color<br>
+Large meeples<br>
+
+
+
+
+
+<br><br><br><br><br><br><br><br><br><br>
+`
+        imgColors.innerHTML = ''
+        let colors = ['green', 'brown', 'darkbrown', 'lightgray', 'gray', 'lightblue']
+        for (let i = 0; i < 9; i++) {
+            const gridItem = document.createElement('div');
+            gridItem.classList.add('grid-item1');
+            gridItem.style.background = colors[list.properties[i]]
+            gridItem.innerHTML = list.properties[i]
+            imgColors.appendChild(gridItem);
+        }
 
     } else {
         alert("The game is over");

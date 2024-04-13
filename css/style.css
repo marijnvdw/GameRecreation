@@ -100,7 +100,8 @@ footer {
     align-content: center;
     display: flex;
     flex-wrap: wrap;
-    justify-content: center
+    justify-content: center;
+    flex-direction: column;
 }
 
 #index h1{
@@ -163,4 +164,30 @@ button:disabled {
 
 }
 
+#imgColors {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);  /* 3 columns with equal width */
+    gap: 1px;  /* gap between grid items */
+    width: 160px;  /* total width of the grid */
+    height: 110px; /* total height of the grid */
+    border: 1px solid #ccc;  /* optional border for visualization */
+}
 
+.grid-item1 {
+    text-align: center;
+    height: 100%;
+    width: 100%;
+    align-content: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #8f7943;
+}
+
+
+#names {
+  display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+}
