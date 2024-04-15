@@ -27,6 +27,7 @@ let computerPlacing = false;
 let cardCountSave = 0;
 let stage = 0; //tells in what stage it is
 let placeThisRound = false;
+const gridWidth = 64;//32
 
 function init() {
 
@@ -49,7 +50,7 @@ function init() {
         playingPlayer = localStorage.getItem('playingPlayer');
     }
 
-    makeRows(32, 32);
+    makeRows(gridWidth, gridWidth);
 
     const cardImage = document.createElement('img');
     cardImage.id = 'image';
@@ -89,8 +90,8 @@ function getApi(url, nextFunction) {
 }
 
 function setCustomData(data) {
-    let versions = JSON.parse(localStorage.getItem('versions'))
-    let waterTiles = []
+    let versions = JSON.parse(localStorage.getItem('versions'));
+    let waterTiles = [];
     for (let i = 0; i < data.length; i++) {
         for (let j = 0; j < data[i].amount; j++) {
             if (data[i].id === 24 || data[i].id === 35) {
@@ -102,14 +103,12 @@ function setCustomData(data) {
             }
         }
     }
-    console.log(waterTiles)
-    console.log(customData)
 
     customData = shuffleArray(customData);
 
     if (versions[1] === true) {
         waterTiles = shuffleArray(waterTiles);
-        waterTiles.push(data[35])
+        waterTiles.push(data[35]);
 
         for (let i = 0; i < waterTiles.length; i++) {
             let itemWithoutAmount = {
@@ -138,15 +137,10 @@ function setCustomData(data) {
 
 
     changeImage(customData[cardCount]);
-    console.log(`Amount of cards is ${customData.length}`)
-    console.log(customData)
-    console.log(waterTiles)
-
-
 }
 
 function setCustomDataLocal(data) {
-    console.log(data);
+    //console.log(data);
     customData = JSON.parse(localStorage.getItem('customData'));
     cardCountSave = localStorage.getItem('cardCount');
     playingPlayer = localStorage.getItem('playingPlayer');
@@ -184,7 +178,7 @@ function playerScoreBoard() {
             j--;
         }
     }
-    console.log(playerColors)
+
 
     for (let i = 0; i < playerAmount; i++) {
         const playerScoreBoard = document.createElement('div');
@@ -313,7 +307,7 @@ function shuffleArray(array) {
 
 function errorMessage(data) {
     console.log(data);
-    alert(data);
+    message(data);
 }
 
 function makeRows(rows, cols) {
@@ -328,27 +322,50 @@ function makeRows(rows, cols) {
         cell.style.border = '1px solid green';
         cell.addEventListener('contextmenu', function (e) {
             e.preventDefault();
-            alert(`success! ${e.target.dataset.index}`);
+            message(`Index:${e.target.dataset.index}, Type:${e.target.dataset.type}`);
 
             return false;
         }, false);
 
         if (Math.ceil((boxCount - rows) / 2) == c + 1) {
 
-            let versions = JSON.parse(localStorage.getItem('versions'))
-            let cardImage = document.createElement('img');
+            let cardImage = document.createElement('div');
+            let versions = JSON.parse(localStorage.getItem('versions'));
+            let types = [];
             if (versions[1] === false) {
                 cell.dataset.colorValues = [1, 2, 0, 2];
-                cardImage.srcset = "images/Tiles/Base_Game/Base_Game_C3_Tile_D.png";
+                cardImage.style.backgroundImage = "url(images/Tiles/Base_Game/Base_Game_C3_Tile_D.png)";
                 cardImage.id = 'cardImage';
+                types = [4, 1, 4, 2, 2, 2, 0, 0, 0];
             } else {
                 cell.dataset.colorValues = [0, 0, 5, 0];
-                cardImage.srcset = "images/Tiles/River/River_I_C2_Tile_A.jpg";
+                cardImage.style.backgroundImage = "url(images/Tiles/River/River_I_C2_Tile_A.jpg)";
                 cardImage.id = 'cardImage';
+                types = [0, 0, 0, 0, 5, 0, 0, 5, 0];
             }
+
+            const rows = 3;
+            const cols = 3;
+            const cellSize = 36; // Adjust as needed
+            const gridContainer = document.createElement('div');
+            gridContainer.style.display = 'grid';
+            gridContainer.style.gridTemplateRows = `repeat(${rows}, ${cellSize}px)`;
+            gridContainer.style.gridTemplateColumns = `repeat(${cols}, ${cellSize}px)`;
+            gridContainer.style.position = 'relative';
+
+            // Add cells to the grid
+            for (let i = 0; i < rows * cols; i++) {
+                const cell = document.createElement('div');
+                cell.dataset.index = i + 1;
+                cell.dataset.type = types[i];
+                cell.id = 'Grid';
+                gridContainer.appendChild(cell);
+            }
+
+            cardImage.appendChild(gridContainer);
             cell.appendChild(cardImage);
         } else {
-            cell.innerText = (c + 1);
+            //cell.innerText = (c + 1);
         }
         container.appendChild(cell).className = "grid-item";
     }
@@ -384,26 +401,26 @@ function clickCell(e) {
 
                         e.target.appendChild(meeple);
                     } else {
-                        alert('There is already a meeple placed this round');
+                        message('There is already a meeple placed this round');
                     }
                 } else {
-                    alert('You don\'t have enough meeples');
+                    message('You don\'t have enough meeples');
                 }
             } else {
-                alert('This place is not available');
+                message('This place is not available');
             }
         } else {
-            alert('This is not the recent laid tile');
+            message('This is not the recent laid tile');
         }
     } else if (roundOver !== false) {
         console.log('Round is over');
-        alert('Round is over');
+        message('Round is over');
     } else {
         let error = '';
         nextCheck = true;
+
         if (!computerPlacing) {
             const clickedIndex = parseInt(e.target.dataset.index);
-            const gridWidth = 32;
 
             const row = Math.floor((clickedIndex - 1) / gridWidth) + 1;
             const column = (clickedIndex - 1) % gridWidth + 1;
@@ -419,11 +436,14 @@ function clickCell(e) {
             const oppositeLeftCell = document.querySelector(`[data-index="${oppositeLeftIndex}"]`);
 
             nextCheck = false;
-
             if (oppositeTopCell && oppositeTopCell.dataset.colorValues) {
                 const oppositeTopColors = oppositeTopCell.dataset.colorValues.split(',').map(Number);
                 if (oppositeTopColors[2] !== customData[cardCount].numbers[0]) {
-                    error += `Top color does not match`;
+                    error += `Top side does not match`;
+                } else if (customData[cardCount].version === 1) {
+                    if (oppositeTopColors[2] !== 5) {
+                        error += `The river isn't connected`;
+                    }
                 }
                 nextCheck = true;
             }
@@ -431,7 +451,11 @@ function clickCell(e) {
             if (oppositeRightCell && oppositeRightCell.dataset.colorValues) {
                 const oppositeRightColors = oppositeRightCell.dataset.colorValues.split(',').map(Number);
                 if (oppositeRightColors[3] !== customData[cardCount].numbers[1]) {
-                    error += `Right color does not match`;
+                    error += `Right side does not match`;
+                } else if (customData[cardCount].version === 1) {
+                    if (oppositeRightColors[3] !== 5) {
+                        error += `The river isn't connected`;
+                    }
                 }
                 nextCheck = true;
             }
@@ -439,7 +463,11 @@ function clickCell(e) {
             if (oppositeBottomCell && oppositeBottomCell.dataset.colorValues) {
                 const oppositeBottomColors = oppositeBottomCell.dataset.colorValues.split(',').map(Number);
                 if (oppositeBottomColors[0] !== customData[cardCount].numbers[2]) {
-                    error += `Bottom color does not match`;
+                    error += `Bottom side does not match`;
+                } else if (customData[cardCount].version === 1) {
+                    if (oppositeBottomColors[0] !== 5) {
+                        error += `The river isn't connected`;
+                    }
                 }
                 nextCheck = true;
             }
@@ -447,14 +475,29 @@ function clickCell(e) {
             if (oppositeLeftCell && oppositeLeftCell.dataset.colorValues) {
                 const oppositeLeftColors = oppositeLeftCell.dataset.colorValues.split(',').map(Number);
                 if (oppositeLeftColors[1] !== customData[cardCount].numbers[3]) {
-                    error += `Left color does not match`;
+                    error += `Left side does not match`;
+                } else if (customData[cardCount].version === 1) {
+                    if (oppositeLeftColors[1] !== 5) {
+                        error += `The river isn't connected`;
+                    }
                 }
                 nextCheck = true;
             }
         }
+
+        if (customData[cardCount].version === 1) {
+
+            for (let i = 0; i < 4; i++) {
+                if (customData[cardCount].numbers[i] === 5) {
+                    console.log(`Water ${i}`);
+                }
+            }
+        }
+
+
         if (nextCheck == false) {
             console.log('Not next other tile');
-            alert('Not next other tile');
+            message('Not next other tile');
         } else if (error === '') {
             if (!computerPlacing) {
                 recentTile = e.target.dataset.index;
@@ -485,7 +528,17 @@ function clickCell(e) {
             // Add cells to the grid
             for (let i = 0; i < rows * cols; i++) {
                 const cell = document.createElement('div');
-                cell.dataset.index = i + 1;
+                if (rotation === 90 || rotation === -270) {
+                    cell.dataset.index = [3, 6, 9, 2, 5, 8, 1, 4, 7][i];
+                } else if (rotation === 180 || rotation === -180) {
+                    cell.dataset.index = [9, 8, 7, 6, 5, 4, 3, 2, 1][i];
+                } else if (rotation === 270 || rotation === -90) {
+                    cell.dataset.index = [7, 4, 1, 8, 5, 2, 9, 6, 3][i];
+                } else {
+                    cell.dataset.index = i + 1;
+                }
+                cell.dataset.type = customData[cardCount].properties[i];
+
                 cell.id = 'Grid';
                 if (properties[i] === 1 || properties[i] === 2 || properties[i] === 3) {
                     cell.className = 'available';
@@ -516,7 +569,7 @@ function clickCell(e) {
             reverseButtons();
         } else {
             console.log(error);
-            alert(error);
+            message(error);
         }
     }
 }
@@ -577,7 +630,7 @@ function changeImage(list) {
         previewImg.style.transform = `rotate(${0}deg)`;
         rotation = 0;
     } else {
-        alert("The game is over");
+        message("The game is over");
     }
 
 }
@@ -610,6 +663,10 @@ function nextPlayerFunction() {
                 element.querySelector('#playingIndicator').style.opacity = 0;
             }
         });
+
+//now
+
+
         updateScores();
         roundOver = false;
         removeAvailableClass();
@@ -618,6 +675,7 @@ function nextPlayerFunction() {
         changeImage(customData[cardCount]);
     }
 }
+
 
 function removeAvailableClass() {
     // Get all elements with the class 'available'
@@ -630,5 +688,57 @@ function removeAvailableClass() {
 }
 
 function debugFunction() { // ${}
-    console.log(`${playerAmount} ${playingPlayer}`)
+    console.log(`${playerAmount} ${playingPlayer}`);
+
+    const meepleImages = document.querySelectorAll('#meeple');
+
+    meepleImages.forEach(element => {
+        console.log(element.parentElement.parentElement.parentElement.parentElement.dataset.index);
+        console.log(element.parentElement.dataset.index);
+    });
+
+    message('hello')
+
+
 }
+
+function message(value) {
+    const message = document.querySelector('#message');
+    let box = document.createElement('div');
+    box.innerHTML = value;
+    box.className = 'messageBox'
+    message.appendChild(box);
+
+    // Remove box after 3 seconds
+    setTimeout(() => {
+        box.remove();
+    }, 3000); // 3000 milliseconds = 3 seconds
+}
+
+document.addEventListener('keydown', function(event) {
+    switch(event.key) {
+        case 'w':
+        case 'W':
+            console.log('W key pressed - Move up');
+            window.scrollBy(0, -30);
+            break;
+        case 'a':
+        case 'A':
+            console.log('A key pressed - Move left');
+            window.scrollBy(-30, 0);
+            break;
+        case 's':
+        case 'S':
+            console.log('S key pressed - Move down');
+            window.scrollBy(0, 30);
+            break;
+        case 'd':
+        case 'D':
+            console.log('D key pressed - Move right');
+            // Move screen to the right
+            window.scrollBy(30, 0);
+            break;
+        default:
+            break;
+    }
+});

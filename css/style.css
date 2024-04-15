@@ -1,3 +1,13 @@
+html {
+    scroll-behavior: smooth;
+}
+
+/* OR */
+
+body {
+    scroll-behavior: smooth;
+}
+
 :root {
     --grid-cols: 1;
     --grid-rows: 1;
@@ -35,6 +45,7 @@
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+
 }
 
 .content {
@@ -44,6 +55,8 @@
 
 footer {
     background-color: #f5f5f5; /* Footer background color */
+    font-size: 19px;
+    text-shadow: 2px 2px 5px #e0e0e0;
 }
 
 #clocks {
@@ -62,6 +75,26 @@ footer {
     /* Add some styles to make it look better */
     text-align: center;
     border-top: 1px solid #ccc;
+}
+
+#message {
+    background-color: transparent;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    text-align: center;
+}
+
+.messageBox {
+    align-content: start;
+    min-width: 300px;
+    margin: 10px;
+    padding: 10px;
+    background-color: #ae7139;
+    border-radius: 5px;
+    color: #e0e0e0;
+    box-shadow: rgba(0, 0, 0, 0.33) 0px 19px 40px, rgba(0, 0, 0, 0.22) 01px 15px 12px;
 }
 
 #meple {
@@ -95,20 +128,27 @@ footer {
     margin: 10px;
 }
 
+h2, h1 {
+    margin: 3px;
+}
+
 #index {
     background-color: #8f7943;
-    align-content: center;
+    /*align-content: center;*/
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     flex-direction: column;
+    margin-inline: 100px;
+    color: #e0e0e0;
+    font-size: 19px;
 }
 
 #index h1{
     align-content: center;
     display: flex;
     color: white;
-    margin-top: 20%;
+    /*margin-top: 20%;*/
 }
 
 #indexButtons {
@@ -186,8 +226,16 @@ button:disabled {
 
 
 #names {
-  display: flex;
+  /*display: flex;*/
     flex-direction: column;
     align-items: flex-start;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);  /* 3 columns with equal width */
+    justify-items: center;
+}
 
+label input {
+    border-radius: 8px;
+    height: 30px;
+    color: #e0e0e0;
 }

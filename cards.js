@@ -149,20 +149,36 @@ The Abbot<br>
 Connecting city's and roads points<br>
 Changing imposible cards<br>
 Meeple in grass<br>
+
 <h2>The Abbot</h2> 
 <a href="https://wikicarpedia.com/car/The_Abbot" target="_blank">Rules</a>
 The Abbot<br>
 Gardens<br>
+
 <h2>The River</h2> 
 <a href="https://wikicarpedia.com/car/River" target="_blank">Rules</a>
 Prevent U turns<br>
-Expansion n(with t spit)<br>
+Expansion water (with t spit)<br>
+
 <h2>EXP 1. Inns and Cathedrals</h2> 
 <a href="https://wikicarpedia.com/car/Inns_and_Cathedrals" target="_blank">Rules</a>
-7th Color<br>
 Large meeples<br>
 
+<h2>Exp. 2 - Traders & Builders</h2>
+New tiles<br>
+Goods<br>
+Builder<br>
+Extra tile from builder<br>
+Pig<br>
 
+<h2>Exp. 3 - The Princess & the Dragon</h2>
+New tiles<br>
+Dragon<br>
+Fairy<br>
+Princes<br>
+Portals<br>
+
+Bugs:
 
 
 

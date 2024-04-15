@@ -5,38 +5,54 @@
     <title>Games</title>
     <link href="css/style.css" rel="stylesheet">
     <script type="text/javascript" src="task.js" defer></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $(function () {
+            $("#dialog").dialog();
+        });
+    </script>
 </head>
 <body>
+
+<div id="message">
+
+</div>
+
+
 <div class="container">
+
     <div class="content">
         <div id="main">
-
         </div>
     </div>
-    <footer>
-        <div id="box">
-            <div>
+</div>
+<footer>
+
+
+    <div id="box">
+        <div>
             <div id="previewImg">
             </div>
+        </div>
+        <div>
+            <div id="clocks">
+                <button id="antiClock">&#x2B6F</button>
+                <button id="Clock">&#x2B6E</button>
             </div>
             <div>
-                <div id="clocks">
-                    <button id="antiClock">&#x2B6F</button>
-                    <button id="Clock">&#x2B6E</button>
-                </div>
-                <div>
-                    <button id="nextPlayer" disabled>Next <br> Player</button>
-                </div>
-                <div>
-                    <button id="debugButton">Debug</button>
-                </div>
+                <button id="nextPlayer" disabled>Next <br> Player</button>
+            </div>
+            <div>
+                <button id="debugButton">Debug</button>
+            </div>
 
-            </div>
-<!--            <button id="save">&#128190</button>-->
-            <div id="boxScore">
-            </div>
         </div>
-</div>
+        <!--            <button id="save">&#128190</button>-->
+        <div id="boxScore">
+        </div>
+    </div>
+
 </footer>
 </body>
 </html>
